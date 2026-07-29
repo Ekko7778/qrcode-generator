@@ -601,10 +601,6 @@
             display: block !important;
         }
 
-        .qr-wrapper img {
-            display: none !important;
-        }
-
         /* Toast 提示 */
         .toast {
             position: fixed;
@@ -1012,34 +1008,421 @@
                 display: none;
             }
         }
+
+        /* Apple-style layout refresh */
+        :root {
+            --accent: #0a84ff;
+            --accent-pressed: #0071e3;
+            --surface: rgba(30, 30, 32, 0.74);
+            --surface-raised: rgba(44, 44, 46, 0.78);
+            --field: rgba(118, 118, 128, 0.16);
+            --separator: rgba(235, 235, 245, 0.15);
+            --label: rgba(235, 235, 245, 0.6);
+            --tertiary-label: rgba(235, 235, 245, 0.38);
+            --system-red: #ff453a;
+        }
+
+        * { -webkit-tap-highlight-color: transparent; }
+
+        body {
+            display: block;
+            min-height: 100dvh;
+            padding: clamp(28px, 6vw, 80px) 24px 40px;
+            color: #f5f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+            font-size: 16px;
+            background: #050505;
+        }
+
+        body::before {
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.22) 0.7px, transparent 0.9px);
+            background-size: 18px 18px;
+            opacity: 0.5;
+            mask-image: radial-gradient(ellipse 78% 54% at 50% 0%, #000 0%, rgba(0, 0, 0, 0.72) 42%, transparent 78%);
+            -webkit-mask-image: radial-gradient(ellipse 78% 54% at 50% 0%, #000 0%, rgba(0, 0, 0, 0.72) 42%, transparent 78%);
+        }
+
+        body::after { display: none; }
+
+        .container {
+            width: min(100%, 760px);
+            max-width: none;
+            margin: 0 auto;
+        }
+
+        .header {
+            max-width: 580px;
+            margin: 0 auto clamp(28px, 5vw, 48px);
+            text-align: left;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            height: 26px;
+            margin: 0 0 14px;
+            padding: 0 10px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--label);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #f5f5f7;
+            background: none;
+            -webkit-text-fill-color: currentColor;
+            font-size: clamp(34px, 7vw, 52px);
+            font-weight: 700;
+            line-height: 1.04;
+            letter-spacing: -0.045em;
+        }
+
+        .header h1::after { display: none; }
+
+        .header .subtitle {
+            max-width: 410px;
+            margin: 14px 0 0;
+            color: var(--label);
+            font-size: 17px;
+            line-height: 1.45;
+        }
+
+        .card {
+            padding: clamp(20px, 4.5vw, 34px);
+            overflow: visible;
+            border: 1px solid var(--separator);
+            border-radius: 28px;
+            background: var(--surface);
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34), inset 0 1px rgba(255, 255, 255, 0.08);
+            backdrop-filter: saturate(180%) blur(28px);
+            -webkit-backdrop-filter: saturate(180%) blur(28px);
+        }
+
+        .card::before { display: none; }
+
+        .template-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 2px;
+            margin: 0 0 28px;
+            padding: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 13px;
+            background: rgba(118, 118, 128, 0.18);
+        }
+
+        .tab-btn {
+            min-height: 36px;
+            justify-content: center;
+            gap: 0;
+            padding: 7px 8px;
+            border: 0;
+            border-radius: 10px;
+            background: transparent;
+            color: var(--label);
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 180ms ease, color 180ms ease, transform 100ms ease-out, box-shadow 180ms ease;
+        }
+
+        .tab-btn span { display: none; }
+        .tab-btn::before { display: none; }
+        .tab-btn:hover { border: 0; background: rgba(255, 255, 255, 0.08); color: #fff; }
+        .tab-btn.active {
+            border: 0;
+            background: var(--surface-raised);
+            color: #fff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 1px rgba(255, 255, 255, 0.07);
+        }
+        .tab-btn:active { transform: scale(0.97); }
+
+        .template-forms { overflow: visible; transition: height 220ms ease; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label, .input-label {
+            margin-bottom: 9px;
+            color: #f5f5f7;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .input-wrapper, .form-group input, .form-group select, .form-group textarea {
+            border-color: transparent;
+            border-radius: 14px;
+            background: var(--field);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transition: background 180ms ease, box-shadow 180ms ease;
+        }
+        .input-wrapper:focus-within, .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: transparent;
+            background: rgba(118, 118, 128, 0.25);
+            box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.32), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+        .input-area { min-height: 132px; padding: 16px; color: #f5f5f7; font-size: 14px; line-height: 1.55; }
+        .form-group input, .form-group select, .form-group textarea { padding: 13px 15px; color: #f5f5f7; font-size: 15px; }
+        .form-group textarea { min-height: 98px; }
+        .input-area::placeholder, .form-group input::placeholder, .form-group textarea::placeholder { color: var(--tertiary-label); }
+        .form-group select option { background: #1c1c1e; }
+
+        .paste-btn {
+            min-height: 32px;
+            padding: 6px 10px;
+            border: 0;
+            border-radius: 9px;
+            background: rgba(10, 132, 255, 0.16);
+            color: #64b5ff;
+            font-size: 13px;
+            transition: background 180ms ease, transform 100ms ease-out;
+        }
+        .paste-btn::before { display: none; }
+        .paste-btn:hover { border: 0; background: rgba(10, 132, 255, 0.25); box-shadow: none; transform: none; }
+        .paste-btn:active { transform: scale(0.96); }
+        .shortcut-hint { margin-top: 10px; color: var(--tertiary-label); }
+        .shortcut-hint kbd { border-color: rgba(255, 255, 255, 0.11); background: rgba(255, 255, 255, 0.07); color: var(--label); font-family: inherit; }
+
+        .btn-group { gap: 10px; margin-top: 28px; }
+        .generate-btn, .clear-btn { height: 50px; border-radius: 14px; transition: background 180ms ease, transform 100ms ease-out, box-shadow 180ms ease; }
+        .generate-btn {
+            background: var(--accent);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(10, 132, 255, 0.22);
+        }
+        .generate-btn::before { display: none; }
+        .generate-btn:hover { background: #2997ff; transform: none; box-shadow: 0 10px 24px rgba(10, 132, 255, 0.28); }
+        .generate-btn:active { background: var(--accent-pressed); transform: scale(0.985); }
+        .clear-btn { width: 50px; border: 0; background: rgba(255, 69, 58, 0.13); color: #ff6961; }
+        .clear-btn:hover { border: 0; background: rgba(255, 69, 58, 0.22); color: #ff8b85; box-shadow: none; }
+        .clear-btn:hover svg { transform: none; }
+        .clear-btn:active { transform: scale(0.94); }
+
+        .result-area { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--separator); }
+        .result-area.active {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            animation: resultAppear 260ms ease-out;
+        }
+        .result-area.active::before {
+            content: "已生成 " attr(data-count) " 个二维码";
+            grid-column: 1 / -1;
+            margin-bottom: 2px;
+            color: var(--label);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        @keyframes resultAppear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+        .qr-item { min-width: 0; margin: 0; padding: 12px; border-color: rgba(255, 255, 255, 0.08); border-radius: 18px; background: rgba(0, 0, 0, 0.2); }
+        .qr-item::before { display: none; }
+        .qr-item:hover { border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
+        .qr-header { align-items: center; min-width: 0; margin-bottom: 10px; gap: 6px; }
+        .qr-header-right { min-width: 0; gap: 5px; }
+        .qr-index { min-width: 0; color: #64b5ff; font-size: 11px; letter-spacing: 0.02em; }
+        .qr-link { min-width: 0; max-width: none; padding: 5px 7px; border-color: transparent; border-radius: 7px; background: rgba(255, 255, 255, 0.07); color: var(--label); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; }
+        .qr-link:hover { border-color: transparent; background: rgba(10, 132, 255, 0.19); color: #90cbff; }
+        .download-btn { width: 30px; height: 30px; border-color: transparent; border-radius: 8px; background: rgba(255, 255, 255, 0.07); color: var(--label); }
+        .download-btn:hover { border-color: transparent; background: rgba(10, 132, 255, 0.19); color: #90cbff; transform: none; }
+        .download-btn:active { transform: scale(0.92); }
+        .qr-wrapper { min-height: 0; padding: 12px; border-radius: 13px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+        .qr-wrapper:hover { transform: none; box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.34), 0 8px 22px rgba(0, 0, 0, 0.12); }
+        .qr-wrapper::before { border-radius: 13px; background: rgba(0, 0, 0, 0.34); }
+        .qr-wrapper::after { border-radius: 999px; background: rgba(28, 28, 30, 0.78); padding: 8px 14px; }
+        .qr-wrapper canvas { width: min(100%, 180px); }
+
+        .security-notice { margin-top: 22px; padding: 18px 20px; border-color: rgba(255, 255, 255, 0.08); border-radius: 20px; background: rgba(255, 255, 255, 0.055); }
+        .security-notice svg, .security-notice-title, .security-tag svg { color: #64b5ff; }
+        .security-notice-desc { color: var(--label); }
+        .security-notice-desc strong { color: #f5f5f7; }
+        .security-tag { border-color: transparent; border-radius: 999px; background: rgba(255, 255, 255, 0.07); color: var(--label); }
+        .footer { margin-top: 20px; padding-top: 0; border-top: 0; }
+        .footer p { margin-top: 18px; color: var(--tertiary-label); }
+        .footer a { color: var(--label); }
+        .footer a:hover { color: #fff; }
+
+        .toast { top: max(18px, env(safe-area-inset-top)); padding: 11px 16px; border-radius: 999px; background: rgba(48, 48, 50, 0.92); color: #fff; box-shadow: 0 8px 26px rgba(0, 0, 0, 0.32); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .qr-lightbox.active { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .qr-lightbox-content { transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .qr-lightbox-canvas { border-radius: 20px; box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45); }
+
+        button:focus-visible, [role="button"]:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+            outline: 3px solid rgba(10, 132, 255, 0.72);
+            outline-offset: 3px;
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 26px 16px 32px; }
+            .header { margin-bottom: 26px; }
+            .header .subtitle { font-size: 16px; }
+            .card { padding: 18px; border-radius: 24px; }
+            .template-tabs { margin-bottom: 22px; }
+            .tab-btn { padding-inline: 4px; font-size: 12px; }
+            .input-area { min-height: 142px; }
+            .result-area.active { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+            .qr-item { padding: 10px; }
+            .qr-header { align-items: center; margin-bottom: 8px; }
+            .qr-header-right { gap: 4px; }
+            .qr-index { font-size: 10px; }
+            .qr-link { display: none; }
+            .download-btn { width: 28px; height: 28px; }
+            .qr-wrapper { padding: 9px; }
+            .security-notice { padding: 16px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 1ms !important; animation-duration: 1ms !important; }
+        }
+
+        @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+            .card, .toast { background: #1c1c1e; backdrop-filter: none; -webkit-backdrop-filter: none; }
+            .card, .security-notice { border-color: rgba(255, 255, 255, 0.28); }
+        }
+
+        /* Results follow the editor as a compact library, not as a competing side panel. */
+        .composer-panel { min-width: 0; }
+
+        @media (min-width: 880px) {
+            .container:has(.result-area.active) {
+                width: min(100%, 1080px);
+            }
+
+            .card:has(.result-area.active) {
+                display: block;
+            }
+
+            .card:has(.result-area.active) .result-area {
+                margin-top: 28px;
+                padding-top: 24px;
+                border-top: 1px solid var(--separator);
+            }
+
+            .card:has(.result-area.active) .result-area.active {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 14px;
+            }
+
+            .card:has(.result-area.active) .qr-wrapper canvas {
+                width: min(100%, 180px);
+            }
+
+            .card:has(.result-area.active) .qr-link {
+                max-width: 104px;
+            }
+        }
+
+        /* Light material palette */
+        :root {
+            --surface: rgba(255, 255, 255, 0.78);
+            --surface-raised: #ffffff;
+            --field: rgba(118, 118, 128, 0.1);
+            --separator: rgba(60, 60, 67, 0.16);
+            --label: #6e6e73;
+            --tertiary-label: #8e8e93;
+        }
+
+        body {
+            color: #1d1d1f;
+            background: #f5f5f7;
+        }
+
+        body::before {
+            background-image: radial-gradient(circle, rgba(71, 102, 130, 0.28) 0.7px, transparent 0.9px);
+            opacity: 0.42;
+        }
+
+        .eyebrow {
+            border-color: rgba(60, 60, 67, 0.14);
+            background: rgba(255, 255, 255, 0.68);
+            color: #6e6e73;
+        }
+        .header h1 { color: #1d1d1f; }
+        .header .subtitle { color: #6e6e73; }
+
+        .card {
+            border-color: rgba(60, 60, 67, 0.14);
+            background: rgba(255, 255, 255, 0.74);
+            box-shadow: 0 24px 70px rgba(30, 36, 45, 0.1), inset 0 1px rgba(255, 255, 255, 0.9);
+        }
+
+        .template-tabs {
+            border-color: rgba(60, 60, 67, 0.1);
+            background: rgba(118, 118, 128, 0.12);
+        }
+        .tab-btn { color: #6e6e73; }
+        .tab-btn:hover { background: rgba(255, 255, 255, 0.68); color: #1d1d1f; }
+        .tab-btn.active { color: #1d1d1f; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+
+        .form-group label, .input-label { color: #1d1d1f; }
+        .input-wrapper, .form-group input, .form-group select, .form-group textarea {
+            background: rgba(255, 255, 255, 0.82);
+            box-shadow: inset 0 0 0 1px rgba(60, 60, 67, 0.12);
+        }
+        .input-wrapper:focus-within, .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.2), inset 0 0 0 1px rgba(10, 132, 255, 0.56);
+        }
+        .input-area, .form-group input, .form-group select, .form-group textarea { color: #1d1d1f; }
+        .input-area::placeholder, .form-group input::placeholder, .form-group textarea::placeholder { color: #8e8e93; }
+        .form-group select option { background: #fff; color: #1d1d1f; }
+        .shortcut-hint { color: #8e8e93; }
+        .shortcut-hint kbd { border-color: rgba(60, 60, 67, 0.18); background: rgba(118, 118, 128, 0.11); color: #515154; }
+
+        .qr-item { border-color: rgba(60, 60, 67, 0.12); background: rgba(255, 255, 255, 0.7); }
+        .qr-item:hover { border-color: rgba(60, 60, 67, 0.2); }
+        .qr-index { color: #0071e3; }
+        .qr-link, .download-btn { background: rgba(118, 118, 128, 0.1); color: #6e6e73; }
+        .qr-link:hover, .download-btn:hover { background: rgba(10, 132, 255, 0.12); color: #0071e3; }
+        .qr-wrapper { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+
+        .security-notice { border-color: rgba(60, 60, 67, 0.12); background: rgba(255, 255, 255, 0.64); }
+        .security-notice svg, .security-notice-title, .security-tag svg { color: #0071e3; }
+        .security-notice-desc { color: #6e6e73; }
+        .security-notice-desc strong { color: #1d1d1f; }
+        .security-tag { background: rgba(118, 118, 128, 0.1); color: #6e6e73; }
+        .footer p { color: #8e8e93; }
+        .footer a { color: #515154; }
+        .footer a:hover { color: #1d1d1f; }
+
+        @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+            .card, .security-notice { background: #fff; border-color: rgba(60, 60, 67, 0.3); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
+            <p class="eyebrow">本地二维码工具</p>
             <h1>SubQR Hub</h1>
-            <p>文本 · WiFi · 邮件 · 短信</p>
+            <p class="subtitle">把文本、网络与联系信息快速转换为可扫描的二维码。</p>
         </div>
 
         <div class="card">
-            <!-- 模板标签页 -->
-            <div class="template-tabs" role="tablist" aria-label="选择二维码类型">
-                <button class="tab-btn active" data-template="text" role="tab" aria-selected="true" aria-controls="form-text">
-                    <span>📝</span> 文本
+            <div class="composer-panel">
+                <!-- 模板标签页 -->
+                <div class="template-tabs" role="tablist" aria-label="选择二维码类型">
+                <button class="tab-btn active" id="tab-text" data-template="text" role="tab" aria-selected="true" aria-controls="form-text">
+                    <span aria-hidden="true">📝</span> 文本
                 </button>
-                <button class="tab-btn" data-template="wifi" role="tab" aria-selected="false" aria-controls="form-wifi">
-                    <span>📶</span> WiFi
+                <button class="tab-btn" id="tab-wifi" data-template="wifi" role="tab" aria-selected="false" aria-controls="form-wifi">
+                    <span aria-hidden="true">📶</span> WiFi
                 </button>
-                <button class="tab-btn" data-template="email" role="tab" aria-selected="false" aria-controls="form-email">
-                    <span>📧</span> 邮件
+                <button class="tab-btn" id="tab-email" data-template="email" role="tab" aria-selected="false" aria-controls="form-email">
+                    <span aria-hidden="true">📧</span> 邮件
                 </button>
-                <button class="tab-btn" data-template="sms" role="tab" aria-selected="false" aria-controls="form-sms">
-                    <span>📱</span> 短信
+                <button class="tab-btn" id="tab-sms" data-template="sms" role="tab" aria-selected="false" aria-controls="form-sms">
+                    <span aria-hidden="true">📱</span> 短信
                 </button>
-            </div>
+                </div>
 
-            <!-- 模板表单容器 -->
-            <div class="template-forms">
+                <!-- 模板表单容器 -->
+                <div class="template-forms">
                 <!-- WiFi 表单 -->
                 <div class="template-form" id="form-wifi" role="tabpanel" aria-labelledby="tab-wifi">
                     <div class="form-group">
@@ -1124,9 +1507,9 @@
                         <span>生成二维码</span>
                     </div>
                 </div>
-            </div>
+                </div>
 
-            <div class="btn-group" role="group" aria-label="操作按钮">
+                <div class="btn-group" role="group" aria-label="操作按钮">
                 <button class="generate-btn" id="generate-btn" aria-label="生成二维码">生成二维码</button>
                 <button class="clear-btn" id="clear-btn" title="清空内容" aria-label="清空所有内容">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1136,6 +1519,7 @@
                         <line x1="14" y1="11" x2="14" y2="17"></line>
                     </svg>
                 </button>
+                </div>
             </div>
 
             <div class="result-area" id="result-area" role="region" aria-label="二维码生成结果" aria-live="polite">
@@ -1178,7 +1562,7 @@
                 </div>
             </div>
 
-            <p>&copy; 2026 <a href="https://github.com/zeno528" target="_blank"><svg class="github-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>Feng</a> · MIT License</p>
+            <p>&copy; 2026 <a href="https://github.com/zeno528/matrix-qr" target="_blank" rel="noreferrer"><svg class="github-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>matrix-qr</a> · MIT License</p>
         </footer>
     </div>
 
@@ -1210,16 +1594,6 @@
                       .replace(/;/g, '\\;')
                       .replace(/,/g, '\\,')
                       .replace(/:/g, '\\:');
-        }
-
-        // MECARD 格式转义
-        function escapeMecard(str) {
-            if (!str) return '';
-            return str.replace(/\\/g, '\\\\')
-                      .replace(/"/g, '\\"')
-                      .replace(/;/g, '\\;')
-                      .replace(/:/g, '\\:')
-                      .replace(/,/g, '\\,');
         }
 
         // 模板数据生成器
@@ -1265,14 +1639,6 @@
             text: () => {
                 return inputEl.value.trim();
             }
-        };
-
-        // 获取模板显示名称
-        const templateNames = {
-            wifi: 'WiFi',
-            email: '邮件',
-            sms: '短信',
-            text: '文本'
         };
 
         // 标签页切换
@@ -1606,16 +1972,19 @@
 
             // 清空结果区域
             resultArea.innerHTML = '';
+            resultArea.removeAttribute('data-count');
             resultArea.classList.add('active');
 
             // 文本模板支持多行
             if (currentTemplate === 'text') {
                 const lines = content.split('\n').map(l => l.trim()).filter(l => l.length > 0);
                 if (lines.length === 0) {
+                    resultArea.classList.remove('active');
                     showToast('请输入有效的文本');
                     return;
                 }
 
+                resultArea.dataset.count = String(lines.length);
                 const fragment = document.createDocumentFragment();
                 lines.forEach((line, idx) => {
                     const qrItem = createQRItem(line, idx + 1, lines.length, 'text');
@@ -1624,6 +1993,7 @@
                 resultArea.appendChild(fragment);
             } else {
                 // 其他模板生成单个二维码
+                resultArea.dataset.count = '1';
                 const qrItem = createQRItem(content, 1, 1, currentTemplate);
                 resultArea.appendChild(qrItem);
             }
@@ -1636,6 +2006,7 @@
         clearBtnEl.addEventListener('click', () => {
             clearCurrentForm();
             resultArea.innerHTML = '';
+            resultArea.removeAttribute('data-count');
             resultArea.classList.remove('active');
 
             // 聚焦到当前表单的第一个输入框
