@@ -8,7 +8,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>SubQR Hub - 通用二维码生成器</title>
     <!-- Favicon - QR Code Style -->
     <link rel="icon" type="image/svg+xml" href="qr.svg?v=2">
@@ -16,18 +16,36 @@
     <link rel="preconnect" href="https://fonts.gstatic.loli.net" crossorigin>
     <link rel="preconnect" href="https://cdn.bootcdn.net">
     <link href="https://fonts.loli.net/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('matrixqr-theme');
+                var light = t === 'light' || (!t && window.matchMedia('(prefers-color-scheme: light)').matches);
+                document.documentElement.classList.toggle('light', light);
+            } catch (e) {}
+        })();
+    </script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <img class="logo" src="qr.svg?v=2" alt="SubQR Hub" width="64" height="64">
-            <p class="eyebrow">本地二维码工具</p>
-            <h1>SubQR Hub</h1>
+            <div class="brand">
+                <img class="logo" src="qr.svg?v=2" alt="SubQR Hub" width="108" height="108">
+                <div class="brand-text">
+                    <p class="eyebrow">本地二维码工具</p>
+                    <h1>SubQR Hub</h1>
+                </div>
+            </div>
             <p class="subtitle">把文本、网络与联系信息快速转换为可扫描的二维码。</p>
         </div>
 
         <div class="card">
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换主题：浅色 / 深色 / 跟随系统" title="点击切换：浅色 → 深色 → 跟随系统">
+                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg class="icon-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            </button>
             <div class="composer-panel">
                 <!-- 模板标签页 -->
                 <div class="template-tabs" role="tablist" aria-label="选择二维码类型">
@@ -196,6 +214,7 @@
     <div class="qr-lightbox" id="qr-lightbox" role="dialog" aria-modal="true" aria-label="二维码预览">
         <div class="qr-lightbox-content">
             <canvas class="qr-lightbox-canvas" id="lightbox-canvas"></canvas>
+            <img class="qr-lightbox-img" id="lightbox-image" alt="二维码大图，长按保存">
             <p class="qr-lightbox-hint">点击空白处关闭</p>
         </div>
     </div>

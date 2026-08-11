@@ -176,10 +176,15 @@ function copyToClipboard(text) {
 // ========== Lightbox 灯罩效果 ==========
 const lightbox = document.getElementById('qr-lightbox');
 const lightboxCanvas = document.getElementById('lightbox-canvas');
+const lightboxImg = document.getElementById('lightbox-image');
+const lightboxHint = document.querySelector('.qr-lightbox-hint');
+let lightboxUrl = null;
 
 // 打开灯罩
 function openLightbox(sourceCanvas) {
     if (!sourceCanvas) return;
+
+    lightbox.classList.remove('img-mode');
 
     // 复制 canvas 到 lightbox
     const ctx = lightboxCanvas.getContext('2d');
@@ -187,7 +192,19 @@ function openLightbox(sourceCanvas) {
     lightboxCanvas.height = sourceCanvas.height;
     ctx.drawImage(sourceCanvas, 0, 0);
 
+    lightboxHint.textContent = '点击空白处关闭';
+
     // 显示 lightbox
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// 打开大图（iOS 长按保存用）
+function openLightboxImage(url) {
+    lightboxUrl = url;
+    lightboxImg.src = url;
+    lightbox.classList.add('img-mode');
+    lightboxHint.textContent = '长按图片保存';
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -196,6 +213,11 @@ function openLightbox(sourceCanvas) {
 function closeLightbox() {
     lightbox.classList.remove('active');
     document.body.style.overflow = '';
+    if (lightboxUrl) {
+        URL.revokeObjectURL(lightboxUrl);
+        lightboxUrl = null;
+        lightboxImg.removeAttribute('src');
+    }
 }
 
 // 点击背景关闭
@@ -327,16 +349,47 @@ function createQRItem(text, templateType = 'text') {
         console.error('QRCode generation error:', err);
     }
 
-    // 下载按钮事件
+    // 下载按钮事件（移动端优先系统分享；iOS 不支持下载属性时打开图片长按保存）
     downloadBtn.addEventListener('click', () => {
         const canvas = wrapper.querySelector('canvas');
-        if (canvas) {
+        if (!canvas) return;
+        canvas.toBlob((blob) => {
+            if (!blob) {
+                showToast('图片生成失败');
+                return;
+            }
+            const filename = `qrcode-${templateType}.png`;
+            const file = new File([blob], filename, { type: 'image/png' });
+
+            // 支持文件分享（iOS 15+ / Android）：走系统分享，可直接存照片或文件
+            let canShareFile = false;
+            try {
+                canShareFile = !!(navigator.canShare && navigator.canShare({ files: [file] }));
+            } catch (e) {}
+            if (canShareFile) {
+                navigator.share({ files: [file], title: filename }).catch(() => {});
+                return;
+            }
+
+            const url = URL.createObjectURL(blob);
+            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+                          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            if (isIOS) {
+                // iOS 无分享能力：页面内显示大图，长按保存
+                openLightboxImage(url);
+                showToast('长按图片保存');
+                return;
+            }
+
             const link = document.createElement('a');
-                    link.download = `qrcode-${templateType}.png`;
-            link.href = canvas.toDataURL('image/png');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
             link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
             showToast('图片已下载');
-        }
+        }, 'image/png');
     });
 
     // 点击链接也可复制
@@ -430,3 +483,28 @@ pasteBtn.addEventListener('click', async () => {
         showToast('无法访问剪贴板，请手动粘贴');
     }
 });
+
+// ========== 主题切换 ==========
+const themeBtn = document.getElementById('theme-toggle');
+const themeMq = window.matchMedia('(prefers-color-scheme: light)');
+const THEME_KEY = 'matrixqr-theme';
+let currentTheme = localStorage.getItem(THEME_KEY) || 'system';
+
+function applyTheme(theme) {
+    currentTheme = theme;
+    const light = theme === 'light' || (theme === 'system' && themeMq.matches);
+    document.documentElement.classList.toggle('light', light);
+    if (themeBtn) themeBtn.dataset.theme = theme;
+    try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+}
+
+if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+        const next = currentTheme === 'light' ? 'dark' : currentTheme === 'dark' ? 'system' : 'light';
+        applyTheme(next);
+    });
+}
+themeMq.addEventListener('change', () => {
+    if (currentTheme === 'system') applyTheme('system');
+});
+applyTheme(currentTheme);
