@@ -7,3 +7,7 @@ Thumbs.db
 
 # Claude Code
 CLAUDE.md
+
+# Node
+node_modules/
+dist/

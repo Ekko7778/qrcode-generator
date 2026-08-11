@@ -1,58 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <defs>
-    <!-- 主渐变：青色到紫色 -->
-    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#22d3ee;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:1" />
-    </linearGradient>
-    <!-- 背景渐变 -->
-    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#18181b;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#09090b;stop-opacity:1" />
-    </linearGradient>
-    <!-- 发光效果 -->
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-  </defs>
-
-  <!-- 圆角背景 -->
-  <rect x="4" y="4" width="120" height="120" rx="24" ry="24" fill="url(#bgGradient)" stroke="url(#mainGradient)" stroke-width="2"/>
-
-  <!-- 二维码图案 -->
-  <g fill="url(#mainGradient)" filter="url(#glow)">
-    <!-- 左上角定位图案 -->
-    <rect x="20" y="20" width="28" height="28" rx="4"/>
-    <rect x="26" y="26" width="16" height="16" rx="2" fill="#09090b"/>
-    <rect x="30" y="30" width="8" height="8" rx="1" fill="url(#mainGradient)"/>
-
-    <!-- 右上角定位图案 -->
-    <rect x="80" y="20" width="28" height="28" rx="4"/>
-    <rect x="86" y="26" width="16" height="16" rx="2" fill="#09090b"/>
-    <rect x="90" y="30" width="8" height="8" rx="1" fill="url(#mainGradient)"/>
-
-    <!-- 左下角定位图案 -->
-    <rect x="20" y="80" width="28" height="28" rx="4"/>
-    <rect x="26" y="86" width="16" height="16" rx="2" fill="#09090b"/>
-    <rect x="30" y="90" width="8" height="8" rx="1" fill="url(#mainGradient)"/>
-
-    <!-- 中间数据区域 -->
-    <rect x="56" y="20" width="8" height="8" rx="1"/>
-    <rect x="56" y="36" width="8" height="8" rx="1"/>
-    <rect x="20" y="56" width="8" height="8" rx="1"/>
-    <rect x="36" y="56" width="8" height="8" rx="1"/>
-    <rect x="56" y="56" width="16" height="16" rx="2"/>
-    <rect x="80" y="56" width="8" height="8" rx="1"/>
-    <rect x="96" y="56" width="8" height="8" rx="1"/>
-    <rect x="56" y="80" width="8" height="8" rx="1"/>
-    <rect x="72" y="80" width="8" height="8" rx="1"/>
-    <rect x="80" y="80" width="28" height="28" rx="4"/>
-    <rect x="86" y="86" width="16" height="16" rx="2" fill="#09090b"/>
-    <rect x="90" y="90" width="8" height="8" rx="1" fill="url(#mainGradient)"/>
-    <rect x="56" y="96" width="8" height="8" rx="1"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+  <!-- 白色圆角背景 -->
+  <rect width="80" height="80" rx="16" fill="#ffffff"/>
+  <!-- 定位角标 ×3（标准回字形，二维码核心元素，留 8px 安全区） -->
+  <rect x="8" y="8" width="28" height="28" rx="4" fill="#1e1b4b"/>
+  <rect x="12" y="12" width="20" height="20" fill="#ffffff"/>
+  <rect x="16" y="16" width="12" height="12" rx="2.5" fill="#1e1b4b"/>
+  <rect x="44" y="8" width="28" height="28" rx="4" fill="#1e1b4b"/>
+  <rect x="48" y="12" width="20" height="20" fill="#ffffff"/>
+  <rect x="52" y="16" width="12" height="12" rx="2.5" fill="#1e1b4b"/>
+  <rect x="8" y="44" width="28" height="28" rx="4" fill="#1e1b4b"/>
+  <rect x="12" y="48" width="20" height="20" fill="#ffffff"/>
+  <rect x="16" y="52" width="12" height="12" rx="2.5" fill="#1e1b4b"/>
+  <!-- 数据模块：模拟真实QR数据区稀疏采样（有逻辑的分布，非纯随机） -->
+  <!-- 上排（右上角标下方） -->
+  <rect x="36" y="30" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="44" y="30" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="56" y="30" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="68" y="30" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <!-- 中排 -->
+  <rect x="40" y="38" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="52" y="38" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="60" y="38" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="68" y="38" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <!-- 下排（右下角区域，平衡视觉） -->
+  <rect x="36" y="46" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="44" y="46" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="56" y="46" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="68" y="46" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="40" y="54" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="48" y="54" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="60" y="54" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="68" y="54" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="36" y="62" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="44" y="62" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="52" y="62" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="64" y="62" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="40" y="70" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="52" y="70" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="60" y="70" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="68" y="70" width="4" height="4" rx="1" fill="#1e1b4b"/>
+  <rect x="64" y="54" width="4" height="4" rx="1" fill="#1e1b4b"/>
 </svg>

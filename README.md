@@ -13,10 +13,9 @@
 - **WiFi** - 扫码即可连接 WiFi，支持 SSID、密码、加密方式配置
 - **邮件** - 扫码打开邮件应用，预设收件人、主题、正文
 - **短信** - 扫码发送短信，预设号码和内容
-- **文本** - 通用文本二维码，支持多行批量生成
+- **文本** - 通用文本二维码
 
 ### 通用功能
-- **批量生成** - 文本模板支持多行输入，一键生成多个二维码
 - **超长内容** - 使用 `qrcode-generator` 库，支持超长文本
 - **快捷键** - `Ctrl + Enter` 快速生成二维码
 - **下载功能** - 单独下载每个二维码为 PNG 图片
@@ -41,19 +40,20 @@
 - 字体：Inter + JetBrains Mono
 - CDN：jsDelivr
 
-## 本地运行
+## 本地开发
 
-无需安装，直接用浏览器打开 `index.html` 即可使用。
-
-或者使用本地服务器：
+需要 Node.js 20.19+：
 
 ```bash
-# 使用 Python
-python -m http.server 8080
-
-# 使用 Node.js
-npx serve .
+npm install
+npm run dev
 ```
+
+开发服务器默认运行在 http://localhost:5173，修改 `index.html` / `styles.css` / `main.js` 会热更新。
+
+## 使用
+
+无需构建：直接用浏览器打开 `index.html` 即可使用，或部署到任意静态服务器（GitHub Pages 等）。
 
 ## 许可证
 
