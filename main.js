@@ -1,6 +1,8 @@
 const inputEl = document.getElementById('sub-input');
 const btnEl = document.getElementById('generate-btn');
 const resultArea = document.getElementById('result-area');
+const qrResult = document.getElementById('qr-result');
+const stylePicker = document.getElementById('qr-style-picker');
 const toast = document.getElementById('toast');
 
 // ========== 模板系统 ==========
@@ -235,24 +237,75 @@ document.addEventListener('keydown', (e) => {
 });
 // ========== Lightbox 结束 ==========
 
+// ========== 二维码样式 ==========
+const QR_STYLES = {
+    classic: { label: '经典方块', color: '#09090b', shape: 'square' },
+    dot: { label: '圆点', color: '#09090b', shape: 'dot' },
+    rounded: { label: '圆角方块', color: '#09090b', shape: 'rounded' },
+    gradient: { label: '品牌渐变', color: ['#22d3ee', '#a78bfa'], shape: 'square' }
+};
+let currentQRStyle = 'classic';
+let lastQRContent = null;
+let lastQRTemplate = 'text';
+
+function buildStylePicker() {
+    const select = document.getElementById('qr-style-select');
+    Object.entries(QR_STYLES).forEach(([key, style]) => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = style.label;
+        select.appendChild(opt);
+    });
+    select.value = currentQRStyle;
+    select.addEventListener('change', () => selectStyle(select.value));
+}
+
+function selectStyle(key) {
+    currentQRStyle = key;
+    const select = document.getElementById('qr-style-select');
+    if (select) select.value = key;
+    if (lastQRContent !== null) renderResult();
+}
+
+function drawQRModules(ctx, qr, cellSize, size, pad = 0) {
+    const style = QR_STYLES[currentQRStyle] || QR_STYLES.classic;
+    const moduleCount = qr.getModuleCount();
+    if (Array.isArray(style.color)) {
+        const g = ctx.createLinearGradient(0, 0, size, size);
+        g.addColorStop(0, style.color[0]);
+        g.addColorStop(1, style.color[1]);
+        ctx.fillStyle = g;
+    } else {
+        ctx.fillStyle = style.color;
+    }
+    const roundRect = typeof ctx.roundRect === 'function';
+    for (let row = 0; row < moduleCount; row++) {
+        for (let col = 0; col < moduleCount; col++) {
+            if (!qr.isDark(row, col)) continue;
+            const x = pad + col * cellSize;
+            const y = pad + row * cellSize;
+            if (style.shape === 'dot') {
+                ctx.beginPath();
+                ctx.arc(x + cellSize / 2, y + cellSize / 2, cellSize * 0.45, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (style.shape === 'rounded' && roundRect) {
+                ctx.beginPath();
+                ctx.roundRect(x, y, cellSize, cellSize, cellSize * 0.25);
+                ctx.fill();
+            } else {
+                ctx.fillRect(x, y, cellSize, cellSize);
+            }
+        }
+    }
+}
+
 function createQRItem(text, templateType = 'text') {
     const item = document.createElement('div');
     item.className = 'qr-item';
 
-    // 截断显示的内容
-    const displayUrl = text.length > 35 ? text.substring(0, 35) + '...' : text;
-
-    // 使用安全的 DOM 操作，避免 XSS
-    const linkSpan = document.createElement('span');
-    linkSpan.className = 'qr-link';
-    linkSpan.setAttribute('title', text);
-    linkSpan.setAttribute('role', 'button');
-    linkSpan.setAttribute('tabindex', '0');
-    linkSpan.setAttribute('aria-label', '点击复制内容');
-    linkSpan.textContent = displayUrl;
-
     const downloadBtn = document.createElement('button');
-    downloadBtn.className = 'download-btn';
+    downloadBtn.type = 'button';
+    downloadBtn.className = 'qr-download-btn';
     downloadBtn.setAttribute('aria-label', '下载二维码图片');
     downloadBtn.setAttribute('title', '下载二维码');
     downloadBtn.innerHTML = `
@@ -261,13 +314,26 @@ function createQRItem(text, templateType = 'text') {
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
         </svg>
+        <span>下载</span>
     `;
 
-    // 二维码下方操作区：复制链接 + 下载图片
+    const copyBtn = document.createElement('button');
+    copyBtn.type = 'button';
+    copyBtn.className = 'copy-btn';
+    copyBtn.setAttribute('aria-label', '复制内容');
+    copyBtn.setAttribute('title', '复制内容');
+    copyBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+    `;
+
+    // 二维码下方操作区：下载图片 + 复制内容
     const actions = document.createElement('div');
     actions.className = 'qr-actions';
-    actions.appendChild(linkSpan);
     actions.appendChild(downloadBtn);
+    actions.appendChild(copyBtn);
 
     const wrapper = document.createElement('div');
     wrapper.className = 'qr-wrapper';
@@ -312,24 +378,25 @@ function createQRItem(text, templateType = 'text') {
             throw new Error('二维码尺寸超出限制，内容可能过长');
         }
 
+        // 画布包含白色圆角容器，显示与下载一致
+        const PAD = 24;
+        const containerSize = size + PAD * 2;
         const canvas = document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
+        canvas.width = containerSize;
+        canvas.height = containerSize;
         const ctx = canvas.getContext('2d');
 
-        // 绘制白色背景
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, size, size);
-
-        // 绘制二维码模块
-        ctx.fillStyle = '#09090b';
-        for (let row = 0; row < moduleCount; row++) {
-            for (let col = 0; col < moduleCount; col++) {
-                if (qr.isDark(row, col)) {
-                    ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
-                }
-            }
+        if (typeof ctx.roundRect === 'function') {
+            ctx.beginPath();
+            ctx.roundRect(0, 0, containerSize, containerSize, 18);
+            ctx.fill();
+        } else {
+            ctx.fillRect(0, 0, containerSize, containerSize);
         }
+
+        // 绘制二维码模块（按所选样式）
+        drawQRModules(ctx, qr, cellSize, size, PAD);
 
         wrapper.appendChild(canvas);
 
@@ -361,20 +428,22 @@ function createQRItem(text, templateType = 'text') {
             const filename = `qrcode-${templateType}.png`;
             const file = new File([blob], filename, { type: 'image/png' });
 
-            // 支持文件分享（iOS 15+ / Android）：走系统分享，可直接存照片或文件
+            // 移动端优先系统分享；桌面端直接下载，不弹系统分享窗口
+            const isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent) ||
+                             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
             let canShareFile = false;
-            try {
-                canShareFile = !!(navigator.canShare && navigator.canShare({ files: [file] }));
-            } catch (e) {}
-            if (canShareFile) {
-                navigator.share({ files: [file], title: filename }).catch(() => {});
-                return;
+            if (isMobile) {
+                try {
+                    canShareFile = !!(navigator.canShare && navigator.canShare({ files: [file] }));
+                } catch (e) {}
+                if (canShareFile) {
+                    navigator.share({ files: [file], title: filename }).catch(() => {});
+                    return;
+                }
             }
 
             const url = URL.createObjectURL(blob);
-            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
-                          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-            if (isIOS) {
+            if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
                 // iOS 无分享能力：页面内显示大图，长按保存
                 openLightboxImage(url);
                 showToast('长按图片保存');
@@ -392,15 +461,8 @@ function createQRItem(text, templateType = 'text') {
         }, 'image/png');
     });
 
-    // 点击链接也可复制
-    linkSpan.addEventListener('click', () => copyToClipboard(text));
-    // 键盘支持：Enter 键复制
-    linkSpan.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            copyToClipboard(text);
-        }
-    });
+    // 复制内容
+    copyBtn.addEventListener('click', () => copyToClipboard(text));
 
     return item;
 }
@@ -421,12 +483,20 @@ function generateQR() {
         return;
     }
 
-    // 清空结果区域
-    resultArea.innerHTML = '';
-    resultArea.classList.add('active');
+    // 记录本次内容，样式切换时可按原内容重绘
+    lastQRContent = content;
+    lastQRTemplate = currentTemplate;
 
-    const qrItem = createQRItem(content, currentTemplate);
-    resultArea.appendChild(qrItem);
+    // 显示结果区域与样式选择器
+    resultArea.classList.add('active');
+    stylePicker.hidden = false;
+    renderResult();
+}
+
+function renderResult() {
+    qrResult.innerHTML = '';
+    if (lastQRContent === null) return;
+    qrResult.appendChild(createQRItem(lastQRContent, lastQRTemplate));
 }
 
 btnEl.addEventListener('click', generateQR);
@@ -435,8 +505,10 @@ btnEl.addEventListener('click', generateQR);
 const clearBtnEl = document.getElementById('clear-btn');
 clearBtnEl.addEventListener('click', () => {
     clearCurrentForm();
-    resultArea.innerHTML = '';
+    lastQRContent = null;
+    qrResult.innerHTML = '';
     resultArea.classList.remove('active');
+    stylePicker.hidden = true;
 
     // 聚焦到当前表单的第一个输入框
     const currentForm = document.getElementById(`form-${currentTemplate}`);
@@ -508,3 +580,6 @@ themeMq.addEventListener('change', () => {
     if (currentTheme === 'system') applyTheme('system');
 });
 applyTheme(currentTheme);
+
+// 构建二维码样式选择器
+buildStylePicker();

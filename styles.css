@@ -250,7 +250,7 @@ body::after {
     border: none;
     border-radius: 12px;
     color: var(--text-primary);
-    font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "PingFang SC", "Microsoft YaHei", monospace;
     font-size: 13px;
     resize: none;
     transition: all 0.2s ease;
@@ -433,32 +433,33 @@ body::after {
     margin-top: 16px;
 }
 
-.qr-link {
-    font-size: 12px;
+.qr-download-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
     color: var(--text-secondary);
-    font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
     flex: 1;
     min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: center;
+    height: 38px;
+    padding: 0 12px;
     cursor: pointer;
     transition: all 0.2s ease;
-    padding: 5px 10px;
-    border-radius: 6px;
+    border-radius: 9px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--border-subtle);
     letter-spacing: 0.02em;
 }
 
-.qr-link:hover {
+.qr-download-btn:hover {
     color: var(--primary-cyan);
     background: rgba(34, 211, 238, 0.1);
     border-color: rgba(34, 211, 238, 0.3);
 }
 
-.download-btn {
+.copy-btn {
     width: 36px;
     height: 36px;
     padding: 0;
@@ -474,18 +475,18 @@ body::after {
     flex-shrink: 0;
 }
 
-.download-btn:hover {
+.copy-btn:hover {
     border-color: rgba(167, 139, 250, 0.4);
     color: var(--primary-violet);
     background: rgba(167, 139, 250, 0.1);
     transform: translateY(-1px);
 }
 
-.download-btn:active {
+.copy-btn:active {
     transform: translateY(0) scale(0.95);
 }
 
-.download-btn svg {
+.copy-btn svg {
     width: 16px;
     height: 16px;
 }
@@ -903,7 +904,7 @@ body::after {
 .form-group textarea {
     min-height: 80px;
     resize: vertical;
-    font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, "PingFang SC", "Microsoft YaHei", monospace;
     font-size: 13px;
 }
 
@@ -994,7 +995,7 @@ html, body, button, input, select, textarea, a, img, canvas, [role='button'] { t
 body {
     display: block;
     min-height: 100dvh;
-    padding: calc(clamp(28px, 6vw, 80px) + env(safe-area-inset-top))
+    padding: calc(clamp(16px, 3vw, 40px) + env(safe-area-inset-top))
              calc(24px + env(safe-area-inset-right))
              calc(40px + env(safe-area-inset-bottom))
              calc(24px + env(safe-area-inset-left));
@@ -1098,6 +1099,7 @@ body::after {
     width: var(--logo-size);
     height: var(--logo-size);
     margin: 0;
+    align-self: flex-end;
     border-radius: calc(var(--logo-size) * 0.2);
     flex-shrink: 0;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
@@ -1105,7 +1107,7 @@ body::after {
 
 .theme-toggle {
     position: absolute;
-    top: -27px;
+    top: 48px;
     right: 18px;
     width: 36px;
     height: 36px;
@@ -1259,21 +1261,64 @@ body::after {
     font-weight: 600;
     letter-spacing: -0.01em;
 }
+.qr-style-picker[hidden] { display: none; }
+.qr-style-picker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: min(100%, 360px);
+    margin-bottom: 14px;
+}
+.qr-style-label {
+    color: var(--label);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+}
+.qr-style-select {
+    flex: 1;
+    min-width: 0;
+    height: 34px;
+    padding: 0 30px 0 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.08);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    appearance: none;
+    -webkit-appearance: none;
+    color: #f5f5f7;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 180ms ease, border-color 180ms ease;
+}
+.qr-style-select:hover { border-color: rgba(255, 255, 255, 0.22); background-color: rgba(255, 255, 255, 0.12); }
+.qr-style-select option { background: #1c1c1e; color: #f5f5f7; }
+.qr-style-select:focus-visible { outline: 3px solid rgba(10, 132, 255, 0.5); outline-offset: 2px; }
+.qr-style-select:disabled { opacity: 0.5; cursor: default; }
 @keyframes resultAppear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 .qr-item { width: min(100%, 360px); min-width: 0; margin: 0; padding: 18px; border-color: rgba(255, 255, 255, 0.08); border-radius: 20px; background: rgba(0, 0, 0, 0.2); }
 .qr-item::before { display: none; }
 .qr-item:hover { border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
 .qr-actions { width: 100%; gap: 8px; margin-top: 14px; }
-.qr-link { flex: 1; min-width: 0; padding: 8px 12px; border-color: transparent; border-radius: 9px; background: rgba(255, 255, 255, 0.07); color: var(--label); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
-.qr-link:hover { border-color: transparent; background: rgba(10, 132, 255, 0.19); color: #90cbff; }
-.download-btn { width: 38px; height: 38px; border-color: transparent; border-radius: 9px; background: rgba(255, 255, 255, 0.07); color: var(--label); }
-.download-btn:hover { border-color: transparent; background: rgba(10, 132, 255, 0.19); color: #90cbff; transform: none; }
-.download-btn:active { transform: scale(0.92); }
-.qr-wrapper { width: 100%; min-height: 0; padding: 14px; border-radius: 14px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+.qr-download-btn { flex: 1; min-width: 0; height: 38px; padding: 0 12px; border-color: transparent; border-radius: 9px; background: rgba(255, 255, 255, 0.07); color: var(--label); font-size: 13px; }
+.qr-download-btn:hover { border-color: transparent; background: rgba(10, 132, 255, 0.19); color: #90cbff; }
+.qr-download-btn:active { transform: scale(0.97); }
+.qr-download-btn svg { width: 16px; height: 16px; }
+.copy-btn { width: 38px; height: 38px; border-color: transparent; border-radius: 9px; background: rgba(255, 255, 255, 0.07); color: var(--label); }
+.copy-btn:hover { border-color: transparent; background: rgba(10, 132, 255, 0.19); color: #90cbff; transform: none; }
+.copy-btn:active { transform: scale(0.92); }
+.copy-btn svg { width: 17px; height: 17px; }
+.qr-wrapper { width: 100%; min-height: 0; padding: 0; border-radius: 14px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
 .qr-wrapper:hover { transform: none; box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.34), 0 8px 22px rgba(0, 0, 0, 0.12); }
 .qr-wrapper::before { border-radius: 14px; background: rgba(0, 0, 0, 0.34); }
 .qr-wrapper::after { border-radius: 999px; background: rgba(28, 28, 30, 0.78); padding: 8px 14px; }
-.qr-wrapper canvas { width: min(100%, 240px); }
+.qr-wrapper canvas { width: min(100%, 288px); }
 
 .security-notice { margin-top: 22px; padding: 18px 20px; border-color: rgba(255, 255, 255, 0.08); border-radius: 20px; background: rgba(255, 255, 255, 0.055); }
 .security-notice svg, .security-notice-title, .security-tag svg { color: #64b5ff; }
@@ -1317,11 +1362,10 @@ button:focus-visible, [role="button"]:focus-visible, input:focus-visible, textar
     .result-area.active { gap: 0; }
     .qr-item { padding: 14px; }
     .qr-actions { gap: 6px; margin-top: 12px; }
-    .qr-link { font-size: 11px; }
-    .download-btn { width: 40px; height: 40px; }
+    .copy-btn { width: 40px; height: 40px; }
     .theme-toggle { width: 40px; height: 40px; }
-    .qr-wrapper { padding: 10px; }
-    .qr-wrapper canvas { width: min(100%, 220px); }
+    .qr-wrapper { padding: 0; }
+    .qr-wrapper canvas { width: min(100%, 264px); }
     .security-notice { padding: 16px; }
 }
 
@@ -1424,9 +1468,12 @@ html.light .shortcut-hint kbd{ border-color: rgba(60, 60, 67, 0.18); background:
 
 html.light .qr-item{ border-color: rgba(60, 60, 67, 0.1); background: rgba(255, 255, 255, 0.66); }
 html.light .qr-item:hover{ border-color: rgba(60, 60, 67, 0.2); }
-html.light .qr-link, html.light .download-btn{ background: rgba(118, 118, 128, 0.1); color: #6e6e73; }
-html.light .qr-link:hover, html.light .download-btn:hover{ background: rgba(10, 132, 255, 0.12); color: #0071e3; }
+html.light .qr-download-btn, html.light .copy-btn{ background: rgba(118, 118, 128, 0.1); color: #6e6e73; }
+html.light .qr-download-btn:hover, html.light .copy-btn:hover{ background: rgba(10, 132, 255, 0.12); color: #0071e3; }
 html.light .qr-wrapper{ box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+html.light .qr-style-select{ border-color: rgba(60, 60, 67, 0.14); background-color: rgba(255, 255, 255, 0.85); color: #1d1d1f; }
+html.light .qr-style-select:hover{ border-color: rgba(60, 60, 67, 0.28); background-color: #fff; }
+html.light .qr-style-select option{ background: #fff; color: #1d1d1f; }
 
 html.light .security-notice{ border-color: rgba(60, 60, 67, 0.1); background: rgba(255, 255, 255, 0.58); }
 html.light .security-notice svg, html.light .security-notice-title, html.light .security-tag svg{ color: #0071e3; }

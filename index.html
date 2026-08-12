@@ -38,14 +38,14 @@
                 </div>
             </div>
             <p class="subtitle">把文本、网络与联系信息快速转换为可扫描的二维码。</p>
-        </div>
-
-        <div class="card">
             <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换主题：浅色 / 深色 / 跟随系统" title="点击切换：浅色 → 深色 → 跟随系统">
                 <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                 <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                 <svg class="icon-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
             </button>
+        </div>
+
+        <div class="card">
             <div class="composer-panel">
                 <!-- 模板标签页 -->
                 <div class="template-tabs" role="tablist" aria-label="选择二维码类型">
@@ -137,7 +137,7 @@
                         <textarea
                             id="sub-input"
                             class="input-area"
-                            placeholder="输入文本或链接...&#10;多行内容将生成一个二维码"
+                            placeholder="输入文本或链接..."
                             aria-label="文本输入框"
                             aria-describedby="input-hint"></textarea>
                     </div>
@@ -165,7 +165,11 @@
             </div>
 
             <div class="result-area" id="result-area" role="region" aria-label="二维码生成结果" aria-live="polite">
-                <!-- 二维码将在这里生成 -->
+                <div class="qr-style-picker" id="qr-style-picker" hidden>
+                    <label class="qr-style-label" for="qr-style-select">二维码样式</label>
+                    <select id="qr-style-select" class="qr-style-select" aria-label="二维码样式"></select>
+                </div>
+                <div id="qr-result"></div>
             </div>
         </div>
 
