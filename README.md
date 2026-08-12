@@ -36,7 +36,7 @@
 ## 技术栈
 
 - 纯 HTML / CSS / JavaScript，无框架依赖
-- 二维码库：[qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) (支持超长内容)
+- 二维码库：[qrcode-generator](https://zeno528.github.io/matrix-qr/) (支持超长内容)
 - 字体：Inter + JetBrains Mono
 - CDN：jsDelivr
 
