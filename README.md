@@ -26,7 +26,7 @@
 
 ## 使用方法
 
-1. 打开 [SubQR Hub](https://ekko7778.github.io/qrcode-generator/)
+1. 打开 [SubQR Hub](https://zeno528.github.io/qrcode-generator/)
 2. 选择模板类型（WiFi / 邮件 / 短信 / 文本）
 3. 填写对应信息
 4. 点击「生成二维码」按钮
@@ -53,7 +53,7 @@ npm run dev
 
 ## 使用
 
-无需构建：直接用浏览器打开 `index.html` 即可使用，或部署到任意静态服务器（GitHub Pages 等）。
+无需构建：直接用浏览器打开 `index.html` 即可使用，或部署到任意静态服务器（GitHub Pages ，cloudflare Pages等）。
 
 ## 许可证
 
@@ -61,4 +61,4 @@ npm run dev
 
 ---
 
-Made with by [Feng](https://github.com/zeno528)
+Made with by [zeno528](https://github.com/zeno528)
